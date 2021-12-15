@@ -1,0 +1,355 @@
+.titulos{
+    color: hsl(24, 71%, 53%);
+}
+
+
+.btnCliente{
+    background-color: transparent;
+    border-color: transparent;
+    color:teal;
+    /* margin: 30px; */
+
+}
+
+.cuerpo{
+
+background-color: #F8F9F9;
+
+}
+
+.radiusImg {
+    border-radius: 80%;
+    width: 110px;
+    /* margin-right: 50px; */
+    position: absolute;
+    right: 0px;
+    padding: 30px;
+  }
+
+  .Img {
+    width: 450px;
+    /* margin-right: 50px; */
+    position: absolute;
+    right: 0px;
+    padding: 30px;
+  }
+
+
+.tabCliente{
+
+    background-color: white;
+    
+}
+
+.contenido{
+    background-color: #F8F9F9;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.return{
+  background-color:#154360;
+  border: none;
+  border-color: transparent;
+  color: white;
+  border-radius: 50px;
+  margin-top: 8px;
+  width: 80px;
+  height: 25px;
+}
+.headerForm{
+    width: 100%;
+    height: 4rem;
+    /* position: relative;
+    top: 0;
+    left: 0; *//* 
+    display: flex; */
+    align-items: center;
+    text-align: center;
+    padding-top: 4px;
+    justify-content: space-between;
+    background-color: #154360;
+    color: white;
+    z-index: 100;
+    transition: .5s;
+  }
+
+  .tabNav{
+    width: 100%;
+    height: 5rem;
+    align-items: center;
+    text-align: center;
+    padding-top: 12px;
+    justify-content: space-between;
+    background-color: white;
+    border-bottom: 1px solid #E5E8E8;
+    z-index: 100;
+    transition: .5s;
+  }
+
+  .tabNav{
+    width: 100%;
+    height: 5rem;
+    text-align: center;
+    padding-top: 12px;
+    background-color: white;
+    border-bottom: 1px solid #E5E8E8;
+    z-index: 100;
+    transition: .5s;
+  }
+
+  .containerForm{
+    width: 100%;
+    position: relative;
+    top: 0;
+    left: 0;
+/*     display: flex;
+    align-items: center;
+    justify-content: space-between; */
+  /*   background-color: #f3f3f3; */
+    padding: 10px;
+    border-right-width: 1em;
+    border: 2px solid #E5E8E8 ;
+    border-radius: 10px;
+  }
+
+.btnClose{
+  background-color: rgb(89, 107, 107);
+  border-color: transparent;
+  color: white;
+  width: 50px;
+  height: 45px;
+  margin-top: auto;
+}
+
+.btnClose2{
+  background-color: transparent;
+  border-color: transparent;
+  color: #154360;
+  width: 40px;
+  height: 40px;
+  /* padding-left: 30%; */
+}
+
+.btnSave{
+    background-color: #F39C12;
+    border-color: transparent;
+    color: white;
+    width: 50px;
+    height: 45px;
+}
+
+
+.linePreloader{
+    width: 1380px;
+    height:4px;
+    background:linear-gradient(to right,#154360, #5499C7);
+    background-color:#ccc;
+    position:fixed;
+    /* top:0;
+    bottom:0;
+    left:0;
+    right:0; */
+    margin:auto;
+    border-radius:4px;
+   /*  background-size:20%; */
+    background-repeat: repeat-y ;
+    background-position:-15% 0; 
+    animation:scroll 0.5s ease-in-out infinite;
+  }
+  
+  @keyframes scroll{
+    50%{background-size:80%}
+    100%{background-position:125% 0;}
+  }
+
+ 
+
+.main {
+  /* text-align: center; */
+  opacity: 0;
+  display: none;
+  transition: opacity 0.5s ease-in;
+}
+.btnPlus{
+  background-color: #F39C12;
+  border: none;
+  border-color: transparent;
+  color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 50px;
+  margin-top: auto;
+}
+.btnExcel{
+  background-color: #F39C12;
+  border: none;
+  border-color: transparent;
+  color: white;
+  width: 130px;
+  height: 25px;
+}
+
+.btnPDF{
+  background-color: #F39C12;
+  border: none;
+  border-color: transparent;
+  color: white;
+  width: 130px;
+  height: 25px;
+}
+.btnDelete{
+  background-color: transparent;
+  border: none;
+  color: rgb(190, 1, 1);
+  margin-left: 16px;
+  text-align: center;
+}
+.btnEdit{
+  background-color: transparent;
+  border: none;
+  color: blue;
+  margin-left: 30px;
+  text-align: center;
+}
+.btnAdd{
+  background-color:#154360;
+  border: none;
+  border-color: transparent;
+  color: white;
+  width: 140px;
+  height: 35px;
+}
+
+.add{
+  background-color:#154360;
+  border: none;
+  border-color: transparent;
+  border-radius: 50px;
+  color: white;
+  margin-top: 7px;
+  width: 20px;
+  height: 20px;
+}
+
+
+table.dataTable thead {
+  background-color: #5D6D7E;
+  color: white;
+}
+
+
+
+.formAdd{ 
+  height: 4rem;
+  display: flex;
+  transition: .5s;
+  background-color: #154360;
+  color: white;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.formulario{
+  margin: 20px;
+}
+
+.titForm{
+  
+  margin: 20px;
+  color: #154360;
+  /* font-weight: bold; */
+  font-size: 15px;
+}
+
+.form-label {
+  position: absolute;
+  /* left: 0; */
+  top: 10px;
+  color: #999;
+  background-color: #fff;
+  z-index: 10;
+  transition: transform 150ms ease-out, font-size 150ms ease-out;
+  font-weight: lighter;
+}
+
+.focused .form-label {
+  transform: translateY(-125%);
+  font-size: .85em;
+  font-weight: lighter;
+}
+
+.form-input {
+  position: relative;
+  padding: 12px 0px 0px 0;
+  width: 100%;
+  outline: 0;
+  border: 0;
+  box-shadow: 0 1px 0 0 #e5e5e5;
+  transition: box-shadow 150ms ease-out;
+  
+}
+
+.form-input:focus{
+  box-shadow: 0 2px 0 0 blue;
+
+}
+
+.form-input.filled {
+  box-shadow: 0 2px 0 0 lightgreen;
+}
+
+/* .custom-select {
+  position: relative;
+  font-family: Arial;
+}
+
+.custom-select select {
+  display: none; 
+}
+
+.select-selected {
+  background-color: DodgerBlue;
+}
+
+.select-selected:after {
+  position: absolute;
+  content: "";
+  top: 14px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: rgb(90, 29, 29) transparent transparent transparent;
+}
+
+.select-selected.select-arrow-active:after {
+  border-color: transparent transparent rgb(73, 23, 23) transparent;
+  top: 7px;
+}
+
+.select-items div,.select-selected {
+  color: #ad2020;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+  cursor: pointer;
+  user-select: none;
+}
+
+.select-items {
+  position: absolute;
+  background-color: DodgerBlue;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+.select-hide {
+  display: none;
+}
+
+.select-items div:hover, .same-as-selected {
+  background-color: rgba(0, 0, 0, 0.1);
+} */
