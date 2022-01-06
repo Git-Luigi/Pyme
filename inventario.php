@@ -36,14 +36,12 @@
         
             valor.style.color = "orange";
             document.getElementById('2').style.color = "gray";
-            document.getElementById('3').style.color = "gray";
         }
         function activeL(valor){
         
             valor.style.color = "orange";
             
             document.getElementById('1').style.color = "gray";
-            document.getElementById('3').style.color = "gray";
         }
         function activeC(valor){
         
@@ -66,7 +64,24 @@
             }
         }
 
-    
+        function update(){
+            var precioU = document.getElementById('precioU');
+
+            var select = document.getElementById('iva');
+            var option = select.options[select.selectedIndex];
+
+            if (precioU.value.length != "0" && option.value != "" ){
+                if(option.value != "0" ){
+                    var porcentajeIva = parseFloat(option.value)/100 ;
+                    var sum = (parseFloat(precioU.value) * parseFloat(porcentajeIva));
+                    sum = sum + parseFloat(precioU.value);
+                    document.getElementById('precioF').value = sum;
+                }else{
+                    
+                    document.getElementById('precioF').value = precioU.value;
+                }
+            }
+        }
         
     </script>
     </head>
@@ -89,7 +104,6 @@
                         <ul class="list-inline">
                             <li class="active" ><a id = "1" onclick = "active(this);" style="color: orange; " data-toggle="tab" href="#addProduct">AGREGAR PRODUCTO</a></li>
                             <li><a style="color: gray; padding-left: 15px" id = "2"  onclick = "activeL(this);" data-toggle="tab" href="#listaProduct">LISTA PRODUCTOS</a></li>
-                            <li><a style="color: gray; padding-left: 15px" id = "3"  onclick = "activeC(this);" data-toggle="tab" href="#catagProduct">CATALOGO</a></li>
                         </ul>
                     </div>
                     <div class="tab-content">
@@ -99,7 +113,7 @@
 
                                 <br>
 					            <div class="full-width panel-tittle headerForm text-center">
-                                        <h5>Registro de nuevo cliente</h5>
+                                        <h5>Inventario de Productos</h5>
                                 </div>
                                 <div class = "contenido">
                                     <div class="row ">
@@ -111,7 +125,7 @@
                                     <br>
                                     <div class="form-group row">
                                         <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label">Nombre Producto *</label>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-5">
                                             <input 
                                                 type="text" 
                                                 id="nombre" 
@@ -125,9 +139,9 @@
                                     </div>
                                     <div class="row form-group ">
                                         <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label">Proveedor *</label>
-                                        <div class = " col-sm-3">
-                                            <select class="form-control" type="text" id="proveedor" name="proveedor">
-                                                <option>Seleccione un proveedor</option>
+                                        <div class = " col-sm-5">
+                                            <select class="form-control" type="text" id="proveedor" name="proveedor" required>
+                                                <option disabled selected value="">Seleccione un proveedor</option>
                                             </select>
                                         </div>
                                     </div> 
@@ -155,41 +169,54 @@
                                         </div>
                                     </div>     
                                     <div class="form-group row">
-                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Cantidad *</label>
-                                        <div class = " col-sm-3">
+                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Existencias *</label>
+                                        <div class = " col-sm-2">
                                             <input type="number" 
                                             id="cantidad" 
                                             name="cantidad" 
                                             class="form-control"
-                                            placeholder="Cantidad"
+                                            placeholder="Existencias"
                                             required="required"
-                                            min="0"/>
+                                            min="0"
+                                            />
                                         </div>
                                     </div>   
                                     <div class="form-group row">
-                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Precio *</label>
-                                        <div class = " col-sm-4" id = "container">
+                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Precio Unitario*</label>
+                                        <div class = " col-sm-3" id = "container">
                                             <input 
                                             type="text" 
-                                            id="precio" 
+                                            id="precioU" 
                                             class="form-control"
-                                            placeholder="Precio"
-                                            required="required"
+                                            placeholder="Precio Unitario"
+                                            required="required" onkeyup="update();"
                                             />
                                         </div>
                                     </div>    
-                                    <div class="form-group row">
-                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Imagen </label>
-                                        <div class = " col-sm-6">
-                                            <input type="file" 
-                                            name="adjunto" 
-                                            accept=".pdf,.jpg,.png" 
-                                            multiple 
-                                            id="imagen" 
-                                            class="form-control"
-                                            placeholder="Imagen"/>
+                                    <div class="form-group row">0
+                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> IVA* </label>
+                                        <div class = " col-sm-2" id = "container">
+                                            <select class="form-control" type="text" id="iva" name="iva" required onChange="update();">
+                                                <option disabled selected value="">IVA</option>
+                                                <option value=" 0" >0%</option>
+                                                <option value=" 1" >1%</option>
+                                                <option value=" 2" >2%</option>
+                                                <option value="13" >13%</option>
+                                            </select>
                                         </div>
-                                    </div>   
+                                    </div> <div class="form-group row">
+                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Precio Final (+ IVA)*</label>
+                                        <div class = " col-sm-3" id = "container">
+                                            <input 
+                                            type="text" 
+                                            id="precioF" 
+                                            class="form-control"
+                                            placeholder="Precio Final (+ IVA)"
+                                            required="required"
+                                            disabled
+                                            />
+                                        </div>
+                                    </div>     
                                     <div class="row form-group ">
                                         <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label">Descripci&oacute;n</label>
                                         <div class = " col-sm-6">
@@ -312,7 +339,7 @@
     </script>
     
     <!--=====  JS =====-->
-    <script src="js/products.js"></script>  =
+    <script src="js/inventario.js"></script>  
       <script src="js/preload.js"></script> 
   </body>
 </html>

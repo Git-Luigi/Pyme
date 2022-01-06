@@ -26,15 +26,19 @@
 
     
     /* Función para insertar datos con firebase */
-    const saveProd = (nombre, precio, descripcion, saveImage) => //se crea en forma de función para facilitar las cosas
+    const saveProd = (nombre, proveedor,fechCad, cantidad, precioU, iva, precioF, descripcion) => //se crea en forma de función para facilitar las cosas
         //en esta parte ya firebase es el .db entonces se le dice que cree una colección nueva que solo va a contener el documento que se le proporcionará 
-        db.collection('productos').doc(usuario)
+        db.collection('inventario').doc(usuario)
                 .collection('listProductos').doc().set({ //el async-await, es para decir que va a tomar tiempo para que este codigo responda
-            
+      
             nombre,
-            precio,
-            descripcion,
-            saveImage
+            proveedor,
+            fechCad,
+            cantidad,
+            precioU,
+            iva,
+            precioF,
+            descripcion
             //imagen //son tareas asincronas, una vez que termine de guardar va a devolver una respuesta
         })
         .then(() => {
@@ -73,21 +77,21 @@
     /* Función para obtener datos con firebase ----- NO ESTA CONSULTANDO POR EL MOMENTO*/
     
     
-     const getProd = () => db.collection('productos').doc(usuario)
+     const getProd = () => db.collection('inventario').doc(usuario)
      .collection('listProductos').get(); //lo que se le dice es que desde la base de datos de firebase, obtenga todas las "tasks"   
      //importante, hay que ponerle el nombres a como aparece en la colección de firebase 
 
 
-    const onGetProd = (callback) => db.collection('productos').doc(usuario)
+    const onGetProd = (callback) => db.collection('inventario').doc(usuario)
     .collection('listProductos').onSnapshot(callback);
 
-    const deleteProd = (id) => db.collection('productos').doc(usuario)
+    const deleteProd = (id) => db.collection('inventario').doc(usuario)
     .collection('listProductos').doc(id).delete();
 
-    const getProds= (id) => db.collection('productos').doc(usuario)
+    const getProds= (id) => db.collection('inventario').doc(usuario)
     .collection('listProductos').doc(id).get();
 
-    const updateProd= (id, updatedClient) => db.collection('productos').doc(usuario)
+    const updateProd= (id, updatedClient) => db.collection('inventario').doc(usuario)
     .collection('listProductos').doc(id).update(updatedClient).then(() => {
       Swal.fire({
         title: 'Producto Actualizado',
@@ -105,7 +109,9 @@
           document.getElementById('1').style.color = "gray";
           document.getElementById('3').style.color = "gray";
           document.getElementById('2').style.color = "orange";
+          document.getElementById("fecha").disabled = false;
         }else{
+          document.getElementById("fecha").disabled = false;
         }
       })
     })
@@ -169,9 +175,6 @@
           querySnapshot.forEach((doc) => {
             const prod = doc.data();
             prod.id = doc.id;  
-
-            /* starsRef = storageRef.child(`${usuario}/productos/${prod.codigo}`);  */
-            starsRef = storageRef.child(`${prod.saveImage}`).getDownloadURL().then(onResolve, onReject);
  
             var descrip = '';
             if (prod.descripcion ==  0){
@@ -179,46 +182,44 @@
             }else{
               descrip = prod.descripcion;
             }
-            function onResolve(foundURL) {
-              tasksContainer.innerHTML += ` 
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                  <div class="card">
-                    <div class="box">
-                        <div class="img">
-                            <img src="${foundURL}">
-                        </div>
-                        <h2>${prod.nombre}<br><span>Precio: ${prod.precio}</span></h2>
-                        <p>Descripci&oacute;n: <br>${descrip}.</p>
-                        
-                    </div>
-                  </div>
-                </div>`;  
-            }
-          
-            function onReject() {
-              tasksContainer.innerHTML += ` 
-              <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                <div class="card">
-                  <div class="box">
-                      <div class="img">
-                          <img src="imagenes/default.jpg">
-                      </div>
-                      <h2>${prod.nombre}<br><span>${prod.precio}</span></h2>
-                      <p>${descrip}.</p>
-                      
-                  </div>
-                </div>
-              </div>`;  
+            var caducidad = '';
+            if ( prod.fechCad.length == 0){
+                caducidad = 'No aplica';
+            }else{
+              caducidad = prod.fechCad;
             }
 
             // guardamos los datos en un array
-            arrayDatos = arrayDatos.concat([[prod.id, prod.nombre, ( "₡ " + prod.precio), descrip, 
+            arrayDatos = arrayDatos.concat([[prod.id, prod.nombre, prod.proveedor, caducidad,
+              prod.cantidad , ( "₡" + prod.precioU), (prod.iva + "%"), ( "₡" + prod.precioF), descrip,
               '<button class="btnEdit" id="'+(prod.id)+'" onclick="editar(this.id)"><i class="far fa-edit"></i></button> <button id="'+(prod.id)+'" onclick="eliminar(this.id)" class="btnDelete"><i class="far fa-trash-alt"></i></button>'
                 ]]);   
                 
                     
                 
             })
+
+            if (contador == 0){
+              onGetProv((querySnapshoProv) =>{
+                querySnapshoProv
+                .forEach((doc) => {
+                  const prov = doc.data();
+                  prov.id =doc.id;
+                  arrayProv = arrayProv.concat([[prov.cedula +" - "+ prov.nombre]]);
+                })
+                arrayProv = arrayProv.concat([['Otro Provedor']]);
+                var array = arrayProv;
+                console.log(array)
+            
+                // Ordena el Array Alfabeticamente, es muy facil ;)):
+                array.sort();
+               
+                addOptions("proveedor", array);
+            
+            
+              }) 
+              contador++;
+            }
             
           /// tabla de clientes
           $(document).ready(function() {
@@ -252,8 +253,13 @@
               columns: [
                     { title: "docId" },
                     { title: "Nombre" },
+                    { title: "Proveedor" },
+                    { title: "Caducidad" },
+                    { title: "Existencias" },
                     { title: "Precio Unidad" },
-                    { title: "Descripción" },
+                    { title: "IVA" },
+                    { title: "Precio Final" },
+                    { title: "Descripcion" },
                     { title: "Acciones" }
                 ]
             } );
@@ -334,15 +340,7 @@
   }
 
   function borr (iden) {
-    getProds(iden).then((doc) => {
-      if (doc.exists) {
-        const dataProd = doc.data();
-        var borr = storageRef.child(`${dataProd.imagen}`)
-        borr.delete();
-        
-        deleteProd( iden);
-      } 
-    });
+    deleteProd( iden);
   }
 
   function editar(iden) {
@@ -376,7 +374,6 @@
     $(document).ready(function() {
       $('[href="#addProduct"]').tab('show');
       document.getElementById('2').style.color = "gray";
-      document.getElementById('3').style.color = "gray";
       document.getElementById('1').style.color = "orange";
 
       editStatus = true; 
@@ -385,10 +382,29 @@
       getProds(iden).then((doc) => {
           if (doc.exists) { 
             const dataProd = doc.data()
+            
+            codigoProdEdit = dataProd.codigo;
+
+            if((dataProd.fechCad).length == 0){
+                document.getElementById("na").checked = true;
+  
+                document.getElementById("fecha").value = "";
+                document.getElementById("fecha").disabled = true;
+
+            }else{
+              document.getElementById("na").checked = false;
+
+              document.getElementById("fecha").disabled = false;
+              ClientProd['fecha'].value = dataProd.fechCad;
+            }
             ClientProd['nombre'].value = dataProd.nombre;
+            ClientProd['proveedor'].value = dataProd.proveedor;
             ClientProd['descripcion'].value = dataProd.descripcion;
-            ClientProd['precio'].value = dataProd.precio;/* 
-            ClientProd['imagen'].value = dataProd.imagen; */
+            ClientProd['cantidad'].value = dataProd.cantidad;
+            ClientProd['precioU'].value = dataProd.precioU;
+            ClientProd['precioF'].value = dataProd.precioF;
+            ClientProd['iva'].value = dataProd.iva;
+          //ClientProd['imagen'].value = dataProd.imagen;
             
           } 
         });
@@ -399,10 +415,23 @@
 
   function limpiar() {
     ClientForm.reset();
+    document.querySelector(".cedula").disabled = false;
     editStatus = false;
 
   }
 
+
+
+   // Rutina para agregar opciones a un <select>
+  function addOptions(domElement, array) {
+    var select = document.getElementsByName(domElement)[0];
+  
+    for (value in array) {
+    var option = document.createElement("option");
+    option.text = array[value];
+    select.add(option);
+    }
+  }
     
     /* Se obtienen los datos que se escriben en el formulario del cliete */
     ClientProd.addEventListener('submit' , async e => { //crea el evento lo que se requiere que haga
@@ -411,49 +440,42 @@
 
         var file; // use the Blob or File 
         const nombre = ClientProd['nombre'];//.value;//crea las variables con lo que se le coloque en el campo task-description
-        const precio = ClientProd['precio'];//.value;//crea las variables con lo que se le coloque en el campo task-description
-        const imagen = ClientProd['imagen'];//.value;//crea las variables con lo que se le coloque en el campo task-description
+        const proveedor = ClientProd['proveedor'];
+        const fechCad = ClientProd['fecha'];
+        const cantidad = ClientProd['cantidad'];//.value;//crea las variables con lo que se le coloque en el campo task-description
+        const precioU = ClientProd['precioU'];//.value;//crea las variables con lo que se le coloque en el campo task-description
+        const precioF = ClientProd['precioF'];//.value;//crea las variables con lo que se le coloque en el campo task-description
         const descripcion = ClientProd['descripcion'];//.value;//crea las variables con lo que se le coloque en el campo task-description
        
       
-        var imageProd;
-        var saveImage = "";
+        var select = document.getElementById('iva');
+        var iva = select.options[select.selectedIndex];
 
         if(!editStatus){
           
 
-          if(imagen.files.length != 0){
-            imageProd = storageRef.child(`${usuario}/productos/${imagen.files.item(0).name}`);
-            saveImage = (`${usuario}/productos/${imagen.files.item(0).name}`);
-
-
-            file = imagen.files[0];
-            imageProd.put(file)
-          }
-
-          await saveProd(nombre.value, precio.value, descripcion.value, saveImage); //.value es para que guarde todo el elemento
+          await saveProd(nombre.value, proveedor.value, fechCad.value ,cantidad.value, precioU.value, iva.value, precioF.value, descripcion.value); //.value es para que guarde todo el elemento
          
+
           
          
         }else{
-          
-          
-          if(imagen.files.length != 0){ 
-            imageProd = storageRef.child(`${usuario}/productos/${imagen.files.item(0).name}`);
-            saveImage = (`${usuario}/productos/${imagen.files.item(0).name}`);
-            file = imagen.files[0];
-            imageProd.put(file)
-          }
-          
           await updateProd(id, {
             nombre: nombre.value,
-            precio: precio.value,
-            descripcion: descripcion.value,
-            saveImage
+            proveedor: proveedor.value,
+            fechCad: fechCad.value ,
+            cantidad: cantidad.value,
+            precioU: precioU.value, 
+            iva: iva.value, 
+            precioF: precioF.value, 
+            descripcion: descripcion.value
           })  
+          
 
         }
         ClientProd.reset(); //Para que cuando se le de guardar devuelvala página en blanco
+        
+        document.getElementById("fecha").disabled = false;
         nombre.focus();
     
     

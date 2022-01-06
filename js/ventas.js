@@ -11,9 +11,15 @@
     
     var codVenta = '';
     var codVentas = '';
+    var contador = 0;
 
     var id = '';
     var nameU, email, photoUrl, uid, emailVerified;
+
+    
+    var arrayClientes = [];
+    var arrayProdID = [];
+    var arrayProd = [];
 
         /* Función para insertar datos con firebase */
         const saveSale = (codigo, cliente, producto, cantidad, fecha, precio, total) => //se crea en forma de función para facilitar las cosas
@@ -143,7 +149,7 @@
 
        })
 
-       codVenta = arrayDatos.length;
+       /* codVenta = arrayDatos.length;
             var formula = Math.log10((codVenta ^ (codVenta >> 31)) - (codVenta >> 31)) | 0 + 1;
 
             if(formula == 1){
@@ -154,118 +160,91 @@
             }
             else {
               codVentas = codVenta;
-            }
+            } */
 
-       onGetProd((querySnapshotProd) =>{
-         arrayProductos = [];
-         querySnapshotProd.forEach((doc) => {
-           const prod = doc.data();
-           prod.id =doc.id;
-           arrayProductos = arrayProductos.concat([[prod.nombre]]);
-         })
-         var array = arrayProductos;
-         console.log(array)
-  
-         // Ordena el Array Alfabeticamente, es muy facil ;)):
-         array.sort();
-        
-         addOptions("provincia", array);
-  
-
-       })
-
-
-       onGetClient((querySnapshoclien) =>{
-        arrayClientes = [];
-        querySnapshoclien
-        .forEach((doc) => {
-          const prod = doc.data();
-          prod.id =doc.id;
-          arrayClientes = arrayClientes.concat([[prod.nombre]]);
-        })
-        var array = arrayClientes;
-        console.log(array)
- 
-        // Ordena el Array Alfabeticamente, es muy facil ;)):
-        array.sort();
-       
-        addOptions("cliente", array);
- 
-
-      })
-       
-
-       /// tabla de clientes
-       $(document).ready(function() {
+            if (contador == 0){
+          
+              onGetClient((querySnapshoclien) =>{
+                querySnapshoclien
+                .forEach((doc) => {
+                  const prod = doc.data();
+                  prod.id =doc.id;
+                  arrayClientes = arrayClientes.concat([[prod.nombre + " - " + prod.cedula  ]]);
+                })
+                arrayClientes = arrayClientes.concat([['0 - Cliente Generico']]);
+                var array = arrayClientes;
+                console.log(array)
          
-         $('#sales').DataTable( {
-           destroy: true,
-           data: arrayDatos,
-           columnDefs: [
-             {
-                 orderable: false,/* 
-                 className: 'select-checkbox', */
-                 targets: 0
-                 
-             },
-             {
-                 targets: [ 0 ],
-                 visible: false,
-                 searchable: false
-             }
-           ],
-           order: [[ 1, 'asc' ]],
-           responsive: true,
-           language: {
-             url: "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
-             search: ' ',
-             searchPlaceholder: 'buscar cliente'
-           },
-           columns: [
-                 { title: "docId" },
-                 { title: "Código" },
-                 { title: "Cliente" },
-                 { title: "Fecha" },
-                 { title: "Producto" },
-                 { title: "Cantidad" },
-                 { title: "Precio" },
-                 { title: "Total" },
-                 { title: "Acciones" }
-             ]
-         } );
+                // Ordena el Array Alfabeticamente, es muy facil ;)):
+                array.sort();
+               
+                addOptions("cliente", array);
+         
+        
+              })
+               
+      
+              var idProd = '1';
+                onGetProd((querySnapshoProd) =>{
+                querySnapshoProd
+                .forEach((doc) => {
     
-       var buttons = new $.fn.dataTable.Buttons( $('#sales').DataTable(), {
-           buttons: [  
-             {
-               //Botón para Excel
-               extend: 'excelHtml5',
-               footer: true,
-               title: 'Clientes',
-               filename: 'clientes_MYPYME',
+                  const prod = doc.data();
+                  prod.id =doc.id;/* 
+                  console.log(prod.id) */
+                  arrayProd = arrayProd.concat([[idProd + " - " +prod.nombre]]);
+                  arrayProdID = arrayProd.concat([[prod.id, idProd, prod.nombre]]);
+                  idProd++;
+                })
+                var array2 = arrayProd;
+            
+                // Ordena el Array Alfabeticamente, es muy facil ;)):
+                array2.sort();
+                
+                addOptions("producto", array2);
+            
+            
+              }) 
+              contador++;
+            } //cierra if para no repetir datos del datatable
 
-               //Aquí es donde generas el botón personalizado
-               text: '<button class="btnExcel"><i class="fas fa-file-excel"></i> Exportar Excel</button>',
-               exportOptions: {
-                 columns: [  1, 2, 3, 4, 5, 6]
-               }
-             },
-             {
-                 extend: 'pdfHtml5',
-                 footer: true,
-                 title: 'Clientes',
-                 filename: 'clientes_MYPYME',
+       /// tabla de productos
+       $(document).ready(function() {
+        $('#ventas').DataTable( {
+          destroy: true,
+          columnDefs: [
+            {
+                orderable: false,
+                targets: 0
+                
+            }
+          ],
+          select: {
+              style:    'os',
+              selector: 'td:first-child'
+          },
+          order: [[ 1, 'asc' ]],
+          responsive: true,
+          language: {
+            url: "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
+            
+          },
+          bFilter: false,
+          lengthChange: false,
+          bPaginate: false,
+          bInfo: false,
+          columns: [
+                { title: "Producto" },
+                { title: "Cantidad" },
+                { title: "Precio Uni." },
+                { title: "Descuento" },
+                { title: "Acciones" }
+            ]
+        } );
 
-                 //Aquí es donde generas el botón personalizado
-                 text: '<button class="btnPDF"><i class="fas fa-file-excel"></i> Exportar PDF</button>',
-                 
-                 exportOptions: {
-                     columns: [  1, 2, 3, 4, 5, 6]
-                 }
-             }
-           ]
-         }).container().appendTo($('#buttons'));
-     } );
-
+        
+      } ); //cierra datatable
+      
      });
 
 
@@ -274,31 +253,16 @@
 });
 
 
-//CARGAR SELECT DE PRODUCTOS
-function myOnLoad() {
-  cargar_provincias()
- }
- 
- // funcion para Cargar Provincias al campo <select>
- function cargar_provincias() {
-  var array = ["Cantabria", "Asturias", "Galicia", "Andalucia", "Extremadura"];
- 
-  // Ordena el Array Alfabeticamente, es muy facil ;)):
-  array.sort();
- 
-  addOptions("provincia", array);
- }
- 
- // Rutina para agregar opciones a un <select>
- function addOptions(domElement, array) {
+// Rutina para agregar opciones a un <select>
+function addOptions(domElement, array) {
   var select = document.getElementsByName(domElement)[0];
- 
+
   for (value in array) {
-   var option = document.createElement("option");
-   option.text = array[value];
-   select.add(option);
+  var option = document.createElement("option");
+  option.text = array[value];
+  select.add(option);
   }
- }
+}
 
 
 

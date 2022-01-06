@@ -24,15 +24,18 @@
     var arrayDatos = [];
     var arrayProv = [];
 
+    var rutaImgUpdate = "";
+
     
     /* Función para insertar datos con firebase */
-    const saveProd = (nombre, precio, descripcion, saveImage) => //se crea en forma de función para facilitar las cosas
+    const saveProd = (nombre, cantidad, precioU, descripcion, saveImage) => //se crea en forma de función para facilitar las cosas
         //en esta parte ya firebase es el .db entonces se le dice que cree una colección nueva que solo va a contener el documento que se le proporcionará 
         db.collection('productos').doc(usuario)
                 .collection('listProductos').doc().set({ //el async-await, es para decir que va a tomar tiempo para que este codigo responda
-            
+      
             nombre,
-            precio,
+            cantidad,
+            precioU,
             descripcion,
             saveImage
             //imagen //son tareas asincronas, una vez que termine de guardar va a devolver una respuesta
@@ -105,7 +108,9 @@
           document.getElementById('1').style.color = "gray";
           document.getElementById('3').style.color = "gray";
           document.getElementById('2').style.color = "orange";
+          document.getElementById("cantidad").disabled = false;
         }else{
+          document.getElementById("cantidad").disabled = false;
         }
       })
     })
@@ -173,12 +178,6 @@
             /* starsRef = storageRef.child(`${usuario}/productos/${prod.codigo}`);  */
             starsRef = storageRef.child(`${prod.saveImage}`).getDownloadURL().then(onResolve, onReject);
  
-            var descrip = '';
-            if (prod.descripcion ==  0){
-              descrip = 'Producto sin descripción';
-            }else{
-              descrip = prod.descripcion;
-            }
             function onResolve(foundURL) {
               tasksContainer.innerHTML += ` 
                 <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -187,7 +186,7 @@
                         <div class="img">
                             <img src="${foundURL}">
                         </div>
-                        <h2>${prod.nombre}<br><span>Precio: ${prod.precio}</span></h2>
+                        <h2>${prod.nombre}<br><span>Precio: ${prod.precioU}</span></h2>
                         <p>Descripci&oacute;n: <br>${descrip}.</p>
                         
                     </div>
@@ -203,23 +202,31 @@
                       <div class="img">
                           <img src="imagenes/default.jpg">
                       </div>
-                      <h2>${prod.nombre}<br><span>${prod.precio}</span></h2>
+                      <h2>${prod.nombre}<br><span>${prod.precioU}</span></h2>
                       <p>${descrip}.</p>
                       
                   </div>
                 </div>
               </div>`;  
             }
+ 
+            var descrip = '';
+            if (prod.descripcion ==  0){
+              descrip = 'Producto sin descripción';
+            }else{
+              descrip = prod.descripcion;
+            }
 
             // guardamos los datos en un array
-            arrayDatos = arrayDatos.concat([[prod.id, prod.nombre, ( "₡ " + prod.precio), descrip, 
+            arrayDatos = arrayDatos.concat([[prod.id, prod.nombre,
+              prod.cantidad , ( "₡" + prod.precioU), descrip,
               '<button class="btnEdit" id="'+(prod.id)+'" onclick="editar(this.id)"><i class="far fa-edit"></i></button> <button id="'+(prod.id)+'" onclick="eliminar(this.id)" class="btnDelete"><i class="far fa-trash-alt"></i></button>'
                 ]]);   
                 
                     
                 
             })
-            
+
           /// tabla de clientes
           $(document).ready(function() {
             $('#product').DataTable( {
@@ -252,8 +259,9 @@
               columns: [
                     { title: "docId" },
                     { title: "Nombre" },
+                    { title: "Existencias" },
                     { title: "Precio Unidad" },
-                    { title: "Descripción" },
+                    { title: "Descripcion" },
                     { title: "Acciones" }
                 ]
             } );
@@ -334,15 +342,7 @@
   }
 
   function borr (iden) {
-    getProds(iden).then((doc) => {
-      if (doc.exists) {
-        const dataProd = doc.data();
-        var borr = storageRef.child(`${dataProd.imagen}`)
-        borr.delete();
-        
-        deleteProd( iden);
-      } 
-    });
+    deleteProd( iden);
   }
 
   function editar(iden) {
@@ -376,7 +376,6 @@
     $(document).ready(function() {
       $('[href="#addProduct"]').tab('show');
       document.getElementById('2').style.color = "gray";
-      document.getElementById('3').style.color = "gray";
       document.getElementById('1').style.color = "orange";
 
       editStatus = true; 
@@ -385,10 +384,34 @@
       getProds(iden).then((doc) => {
           if (doc.exists) { 
             const dataProd = doc.data()
+            console.log(dataProd.saveImage);
+
+            if((dataProd.saveImage).length != "0"){
+
+              rutaImgUpdate = dataProd.saveImage;
+              document.getElementById("imagen").placeholder = "imagen puesss";
+            }else{
+              /* rutaImgUpdate = dataProd.saveImage; */
+              document.getElementById("imagen").disabled = false;
+            }
+
+            if(dataProd.cantidad == "No Aplica"){
+                document.getElementById("na").checked = true;
+  
+                document.getElementById("cantidad").value = "";
+                document.getElementById("cantidad").disabled = true;
+
+            }else{
+              document.getElementById("cantidad").checked = false;
+
+              document.getElementById("cantidad").disabled = false;
+              ClientProd['cantidad'].value = dataProd.fechCad;
+            }
             ClientProd['nombre'].value = dataProd.nombre;
             ClientProd['descripcion'].value = dataProd.descripcion;
-            ClientProd['precio'].value = dataProd.precio;/* 
-            ClientProd['imagen'].value = dataProd.imagen; */
+            ClientProd['cantidad'].value = dataProd.cantidad;
+            ClientProd['precioU'].value = dataProd.precioU;
+          //ClientProd['imagen'].value = dataProd.imagen;
             
           } 
         });
@@ -399,61 +422,64 @@
 
   function limpiar() {
     ClientForm.reset();
+    document.querySelector(".cedula").disabled = false;
     editStatus = false;
 
   }
 
-    
     /* Se obtienen los datos que se escriben en el formulario del cliete */
     ClientProd.addEventListener('submit' , async e => { //crea el evento lo que se requiere que haga
         e.preventDefault();
 
-
-        var file; // use the Blob or File 
+        var file;
         const nombre = ClientProd['nombre'];//.value;//crea las variables con lo que se le coloque en el campo task-description
-        const precio = ClientProd['precio'];//.value;//crea las variables con lo que se le coloque en el campo task-description
+        const precio = ClientProd['precioU'];//.value;//crea las variables con lo que se le coloque en el campo task-description
+        const cantidad = ClientProd['cantidad'];//.value;//crea las variables con lo que se le coloque en el campo task-description
         const imagen = ClientProd['imagen'];//.value;//crea las variables con lo que se le coloque en el campo task-description
         const descripcion = ClientProd['descripcion'];//.value;//crea las variables con lo que se le coloque en el campo task-description
        
       
         var imageProd;
         var saveImage = "";
+        var canti;
+
+        if(imagen.files.length != 0){
+          imageProd = storageRef.child(`${usuario}/productos/${imagen.files.item(0).name}`);
+          saveImage = (`${usuario}/productos/${imagen.files.item(0).name}`);
+
+
+          file = imagen.files[0];
+          imageProd.put(file)
+        }
+
+        if(cantidad.value.length != "0"){
+            canti = cantidad.value;
+        }else{
+          canti = "No Aplica"
+        }
 
         if(!editStatus){
           
 
-          if(imagen.files.length != 0){
-            imageProd = storageRef.child(`${usuario}/productos/${imagen.files.item(0).name}`);
-            saveImage = (`${usuario}/productos/${imagen.files.item(0).name}`);
-
-
-            file = imagen.files[0];
-            imageProd.put(file)
-          }
-
-          await saveProd(nombre.value, precio.value, descripcion.value, saveImage); //.value es para que guarde todo el elemento
+          await saveProd(nombre.value, canti, precio.value, descripcion.value, saveImage); //.value es para que guarde todo el elemento
          
+
           
          
         }else{
-          
-          
-          if(imagen.files.length != 0){ 
-            imageProd = storageRef.child(`${usuario}/productos/${imagen.files.item(0).name}`);
-            saveImage = (`${usuario}/productos/${imagen.files.item(0).name}`);
-            file = imagen.files[0];
-            imageProd.put(file)
-          }
-          
           await updateProd(id, {
             nombre: nombre.value,
-            precio: precio.value,
+            cantidad: canti,
+            precioU: precio.value, 
             descripcion: descripcion.value,
             saveImage
           })  
+          
 
         }
         ClientProd.reset(); //Para que cuando se le de guardar devuelvala página en blanco
+        
+        document.getElementById("cantidad").disabled = false;
         nombre.focus();
     
     

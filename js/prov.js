@@ -3,8 +3,8 @@
     const auth = firebase.auth(); //liga la constante con la autenticacion de Firebase
     var user = auth.currentUser; // estado actual del usuario
     var usuario; //variable para guardar el UID del user
-    const ClientForm = document.getElementById('client-form'); // formulario de registro
-    //var table = $('#clients').DataTable(); //tabla que se va a completar con los registros de firebase
+    const ProvForm = document.getElementById('proveedor-form'); // formulario de registro
+    //var table = $('#provs').DataTable(); //tabla que se va a completar con los registros de firebase
     const userData = document.getElementById("userData");
     var editStatus = false;
     var documento = '';
@@ -13,26 +13,26 @@
 
        /* Función para obtener datos con firebase*/
     
-    
-       const getClient = () => db.collection('clientes').doc(usuario)
-       .collection('listClientes').get(); //lo que se le dice es que desde la base de datos de firebase, obtenga todas las "tasks"   
-       //importante, hay que ponerle el nombres a como aparece en la colección de firebase 
-  
-  
-      const onGetClient = (callback) => db.collection('clientes').doc(usuario)
-      .collection('listClientes').onSnapshot(callback);
-  
-      const deleteClient = (id) => db.collection('clientes').doc(usuario)
-      .collection('listClientes').doc(id).delete();
-  
-      const getClients= (id) => db.collection('clientes').doc(usuario)
-      .collection('listClientes').doc(id).get();
-  
-      const updateClient= (id, updatedClient) => db.collection('clientes').doc(usuario)
-      .collection('listClientes').doc(id).update(updatedClient).then(() => {
+       const getProv = () => db.collection('proveedor').doc(usuario)
+     .collection('listProveedores').get(); //lo que se le dice es que desde la base de datos de firebase, obtenga todas las "tasks"   
+     //importante, hay que ponerle el nombres a como aparece en la colección de firebase 
+
+
+    const onGetProv = (callback) => db.collection('proveedor').doc(usuario)
+    .collection('listProveedores').onSnapshot(callback);
+
+    const deleteProv = (id) => db.collection('proveedor').doc(usuario)
+    .collection('listProveedores').doc(id).delete();
+
+    const getProvs= (id) => db.collection('proveedor').doc(usuario)
+    .collection('listProveedores').doc(id).get();
+
+    const updateProv= (id, updateProv) => db.collection('proveedor').doc(usuario)
+    .collection('listProveedores').doc(id).update(updateProv).then(() => {
+      limpiar();
         Swal.fire({
-          title: 'Registro Completo',
-          text: "Desea visualizar la lista de clientes?",
+          title: 'Actualizacion Completa',
+          text: "Desea visualizar la lista de proveedores?",
           icon:'success',
           iconColor: '#28B463',
           showCancelButton: true,
@@ -42,7 +42,7 @@
           confirmButtonText: 'Confirmar'
         }).then((result) => {
           if (result.isConfirmed) {
-            $('[href="#listaClientes"]').tab('show');
+            $('[href="#listaProv"]').tab('show');
             document.getElementById('1').style.color = "gray";
             document.getElementById('2').style.color = "orange";
             document.querySelector(".cedula").disabled = false;
@@ -63,24 +63,24 @@
       });
 
     /* Función para insertar datos con firebase */
-    const saveClient = (cedula, nombre, arryTels, direccion, arrayEmails, fecha) => //se crea en forma de función para facilitar las cosas
+    const saveProv = (cedula, nombre, arryTels, arrayEmails, descripcion) => //se crea en forma de función para facilitar las cosas
         //en esta parte ya firebase es el .db entonces se le dice que cree una colección nueva que solo va a contener el documento que se le proporcionará 
         
          
         
-        db.collection('clientes').doc(usuario)
-                .collection('listClientes').doc().set({ //el async-await, es para decir que va a tomar tiempo para que este codigo responda
+        db.collection('proveedor').doc(usuario)
+                .collection('listProveedores').doc().set({ //el async-await, es para decir que va a tomar tiempo para que este codigo responda
             cedula,
             nombre,
             arryTels,
-            direccion,
             arrayEmails,
-            fecha //son tareas asincronas, una vez que termine de guardar va a devolver una respuesta
+            descripcion //son tareas asincronas, una vez que termine de guardar va a devolver una respuesta
         })
         .then(() => {
+          limpiar();
           Swal.fire({
             title: 'Registro Completo',
-            text: "Desea visualizar la lista de clientes?",
+            text: "Desea visualizar la lista de proveedores?",
             icon:'success',
             iconColor: '#28B463',
             showCancelButton: true,
@@ -90,7 +90,7 @@
             confirmButtonText: 'Confirmar'
           }).then((result) => {
             if (result.isConfirmed) {
-              $('[href="#listaClientes"]').tab('show');
+              $('[href="#listaProv"]').tab('show');
               document.getElementById('1').style.color = "gray";
               document.getElementById('2').style.color = "orange";
             }else{
@@ -144,60 +144,47 @@
       }
     });
 
-      const querySnapshot = await getClient();
-        onGetClient((querySnapshot) => {  
+    const querySnapshot = await getProv();
+        onGetProv((querySnapshot) => {  
           arrayDatos = [];        
           //table.innerHTML = ''
           querySnapshot.forEach((doc) => {
-            const client = doc.data();
-            client.id = doc.id;  
+            const prov = doc.data();
+            prov.id = doc.id;  
 
             var telefonos= "";
             var correos= "";
 
-            for(let i=0; i<((client.arryTels).length); i++){
+            for(let i=0; i<((prov.arryTels).length); i++){
               if(i ==0){
-                telefonos = client.arryTels[i];
+                telefonos = prov.arryTels[i];
               }else{
-                telefonos += ", "+ client.arryTels[i];
+                telefonos += ", "+ prov.arryTels[i];
               }
             }
 
-            for(let i=0; i < ((client.arrayEmails).length); i++){
+            for(let i=0; i < ((prov.arrayEmails).length); i++){
               if(i ==0){
-                correos = client.arrayEmails[i];
+                correos = prov.arrayEmails[i];
               }else{
-                correos += ", "+ client.arrayEmails[i];
+                correos += ", "+ prov.arrayEmails[i];
               }
             }
-
-
-            var fechaa = new Date();
-            var fechaNac = "";
-            if((client.fecha) != ''){
-              
-              const chars = client.fecha.split('-');
-  
-              fechaNac =  parseInt(fechaa.getFullYear()) - parseInt(chars[0]);
-
-            }else{
-              fechaNac = "N/A";
-            }
             
             
-              arrayDatos = arrayDatos.concat([[client.id, client.cedula, client.nombre , telefonos, client.direccion ,
-                correos , fechaNac, 
-                '<button class="btnEdit" id="'+(client.id)+'" onclick="editar(this.id)"><i class="far fa-edit"></i></button> <button id="'+(client.id)+'" onclick="eliminar(this.id)" class="btnDelete"><i class="far fa-trash-alt"></i></button>'
+              arrayDatos = arrayDatos.concat([[prov.id, prov.cedula, prov.nombre , telefonos,
+                correos , prov.descripcion, 
+                '<button class="btnEdit" id="'+(prov.id)+'" onclick="editar(this.id)"><i class="far fa-edit"></i></button> <button id="'+(prov.id)+'" onclick="eliminar(this.id)" class="btnDelete"><i class="far fa-trash-alt"></i></button>'
                  ]]);
 
-                 console.log(fechaNac);
-                 console.log(arrayDatos);        
+
+                                    
           })
 
-          /// tabla de clientes
+          /// tabla de proves
           $(document).ready(function() {
             
-            $('#clients').DataTable( {
+            $('#proveedor').DataTable( {
               destroy: true,
               data: arrayDatos,
               columnDefs: [
@@ -217,28 +204,27 @@
               language: {
                 url: "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
                 search: ' ',
-                searchPlaceholder: 'buscar cliente'
+                searchPlaceholder: 'buscar proveedor'
               },
               columns: [
                     { title: "docId" },
                     { title: "ID" },
                     { title: "Nombre" },
                     { title: "Tel&eacute;fono" },
-                    { title: "Direcci&oacute;n" },
                     { title: "Correo" },
-                    { title: "Edad" },
+                    { title: "Descripci&oacute;n" },
                     { title: "Acciones" }
                 ]
             } );
        
-          var buttons = new $.fn.dataTable.Buttons( $('#clients').DataTable(), {
+          var buttons = new $.fn.dataTable.Buttons( $('#proveedor').DataTable(), {
               buttons: [  
                 {
                   //Botón para Excel
                   extend: 'excelHtml5',
                   footer: true,
-                  title: 'Clientes',
-                  filename: 'clientes_MYPYME',
+                  title: 'Proveedores',
+                  filename: 'proveedores_MYPYME',
 
                   //Aquí es donde generas el botón personalizado
                   text: '<button class="btnExcel"><i class="fas fa-file-excel"></i> Exportar Excel</button>',
@@ -249,8 +235,8 @@
                 {
                     extend: 'pdfHtml5',
                     footer: true,
-                    title: 'Clientes',
-                    filename: 'clientes_MYPYME',
+                    title: 'Proveedores',
+                    filename: 'proveedores_MYPYME',
 
                     //Aquí es donde generas el botón personalizado
                     text: '<button class="btnPDF"><i class="fas fa-file-excel"></i> Exportar PDF</button>',
@@ -279,10 +265,10 @@
       confirmButtonText: 'Confirmar'
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteClient( iden);
+        deleteProv( iden);
         Swal.fire({
           title:'Eliminado!',
-          text: 'El registro se ha eliminado.',
+          text: 'El proveedor se ha eliminado.',
           icon:'success',
           iconColor: '#28B463',
           confirmButtonColor: '#154360',
@@ -291,7 +277,7 @@
       }else{
         Swal.fire({
           title:'Cancelado!',
-          text: 'No se ha eliminado el registro.',
+          text: 'No se ha eliminado el registro del proveedor.',
           icon:'error',
           iconColor: '#C0392B',
           confirmButtonColor: '#154360',
@@ -306,7 +292,7 @@
   function editar(iden) {
     Swal.fire({
       title: 'Editar registro?',
-      text: "Desea modificar los datos del Cliente?",
+      text: "Desea modificar los datos del provedor?",
       icon: 'question',
       iconColor: '#F1C40F',
       showCancelButton: true,
@@ -332,7 +318,7 @@
   }
   function confirmEdit(iden){
     $(document).ready(function() {
-      $('[href="#addCliente"]').tab('show');
+      $('[href="#addProveedor"]').tab('show');
       document.getElementById('2').style.color = "gray";
       document.getElementById('1').style.color = "orange";
       document.querySelector(".cedula").disabled = true;
@@ -340,17 +326,18 @@
       editStatus = true; 
       id = iden;
 
-      getClients(iden).then((doc) => {
+      getProvs(iden).then((doc) => {
           if (doc.exists) {
-            const dataClient = doc.data()
-            ClientForm['telefono'].value = dataClient.arryTels[0];
-            ClientForm['telefono2'].value = dataClient.arryTels[1];
-            ClientForm['correo'].value = dataClient.arrayEmails[0];
-            ClientForm['correo2'].value = dataClient.arrayEmails[1];
-            ClientForm['cedula'].value = dataClient.cedula;
-            ClientForm['nombre'].value = dataClient.nombre;
-            ClientForm['direccion'].value = dataClient.direccion;
-            ClientForm['fecha'].value = dataClient.fecha;
+            const dataprov = doc.data()
+
+              ProvForm['correo2'].value = dataprov.arrayEmails[1];
+              ProvForm['telefono2'].value = dataprov.arryTels[1];
+
+            ProvForm['telefono'].value = dataprov.arryTels[0];
+            ProvForm['correo'].value = dataprov.arrayEmails[0];
+            ProvForm['cedula'].value = dataprov.cedula;
+            ProvForm['nombre'].value = dataprov.nombre;
+            ProvForm['descripcion'].value = dataprov.descripcion;
             
           } 
         });
@@ -360,82 +347,79 @@
 
 
   function limpiar() {
-    ClientForm.reset();
+    ProvForm.reset();
     document.querySelector(".cedula").disabled = false;
     editStatus = false;
+    $(".phone").hide();
+    $(".email").hide();
 
   }
   
-  function checkClient(ced){
+  function checkProv(ced){
     var result = 'false';
     if(arrayDatos.length > 0){
       for (var i = 0; i < arrayDatos.length; i+=1) {
-        console.log(arrayDatos[i][1]);
         if(arrayDatos[i][1] == ced){
           result = 'true';
           return result;
         }
+        
       } 
       result = 'false';
     }
     return result;
   }
 
-  function saveCliente(){
-
-  }
+ 
     /* Se obtienen los datos que se escriben en el formulario del cliete */
-    ClientForm.addEventListener('submit' , async e => { //crea el evento lo que se requiere que haga
+    ProvForm.addEventListener('submit' , async e => { //crea el evento lo que se requiere que haga
         e.preventDefault();
     
-        const cedula = ClientForm['cedula'];//.value;//crea las variables con lo que se le coloque en el campo task-title
-        const nombre = ClientForm['nombre'];//.value;//crea las variables con lo que se le coloque en el campo task-description
-        const telefono = ClientForm['telefono'] ;//.value;//crea las variables con lo que se le coloque en el campo task-description
-        const telefono2 = ClientForm['telefono2'] ;
-        const direccion = ClientForm['direccion'];//.value;//crea las variables con lo que se le coloque en el campo task-description
-        const correo = ClientForm['correo'];//.value;//crea las variables con lo que se le coloque en el campo task-description
-        const correo2 = ClientForm['correo2'];
-        const fecha = ClientForm['fecha'];//.value;//crea las variables con lo que se le coloque en el campo task-description
-    
+        const cedula = ProvForm['cedula'];//.value;//crea las variables con lo que se le coloque en el campo task-title
+        const nombre = ProvForm['nombre'];//.value;//crea las variables con lo que se le coloque en el campo task-description
+        const telefono = ProvForm['telefono'] ;//.value;//crea las variables con lo que se le coloque en el campo task-description
+        const telefono2 = ProvForm['telefono2'] ;
+        const descripcion = ProvForm['descripcion'];//.value;//crea las variables con lo que se le coloque en el campo task-description
+        const correo = ProvForm['correo'];//.value;//crea las variables con lo que se le coloque en el campo task-description
+        const correo2 = ProvForm['correo2'];
+        
         //console.log("ced: " + cedula +"nom: " + nombre + " fec: " + fecha + "tel: " + telefono + "corr: " +correo + "dir: "+direccion)
-       // await saveClient(cedula.value, nombre.value, telefono.value, direccion.value, correo.value, fecha.value ); //.value es para que guarde todo el elemento
+       // await saveprov(cedula.value, nombre.value, telefono.value, direccion.value, correo.value, fecha.value ); //.value es para que guarde todo el elemento
 
        var telefonos= [telefono.value, telefono2.value];
        var correos = [correo.value, correo2.value];
-       console.log(checkClient(cedula.value));
 
         if(!editStatus){
 
-          if(checkClient(cedula.value) =="true"){
+          if(checkProv(cedula.value) =="true"){
             Swal.fire({
               title:'Error!',
-              text: 'Este cliente ya esta registrado!!',
+              text: 'Este Proveedor ya se encuentra registrado!!',
               icon:'error',
               iconColor: '#C0392B',
               confirmButtonColor: '#154360',
               confirmButtonText: 'Aceptar'
             })
           } else{
-            await saveClient(cedula.value, nombre.value, telefonos, direccion.value, correos, fecha.value ); //.value es para que guarde todo el elemento    
+            await saveProv(cedula.value, nombre.value, telefonos, correos, descripcion.value ); //.value es para que guarde todo el elemento    
 
           }
         }else{
-            await updateClient(id, {
+            await updateProv(id, {
               cedula: cedula.value,
               nombre: nombre.value,
               arryTels: telefonos,
-              direccion: direccion.value,
               arrayEmails: correos,
-              fecha: fecha.value
+              descripcion: descripcion.value
   
             })
           
           
         }
-        ClientForm.reset(); //Para que cuando se le de guardar devuelvala página en blanco
-        cedula.focus();
+        ProvForm.reset(); //Para que cuando se le de guardar devuelvala página en blanco
+        nombre.focus();
          /*
-        window.location.assign("index.php#tabListCliente") */
+        window.location.assign("index.php#tabListprove") */
     
     
         

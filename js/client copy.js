@@ -11,7 +11,7 @@
     var id = '';
     var nameU, email, photoUrl, uid, emailVerified;
 
-       /* Función para obtener datos con firebase*/
+       /* Función para obtener datos con firebase ----- NO ESTA CONSULTANDO POR EL MOMENTO*/
     
     
        const getClient = () => db.collection('clientes').doc(usuario)
@@ -61,9 +61,9 @@
           confirmButtonText: 'Aceptar'
         })
       });
-
+    
     /* Función para insertar datos con firebase */
-    const saveClient = (cedula, nombre, arryTels, direccion, arrayEmails, fecha) => //se crea en forma de función para facilitar las cosas
+    const saveClient = (cedula, nombre, arryContacto, direccion, correo, fecha) => //se crea en forma de función para facilitar las cosas
         //en esta parte ya firebase es el .db entonces se le dice que cree una colección nueva que solo va a contener el documento que se le proporcionará 
         
          
@@ -72,9 +72,9 @@
                 .collection('listClientes').doc().set({ //el async-await, es para decir que va a tomar tiempo para que este codigo responda
             cedula,
             nombre,
-            arryTels,
+            arryContacto,
             direccion,
-            arrayEmails,
+            correo,
             fecha //son tareas asincronas, una vez que termine de guardar va a devolver una respuesta
         })
         .then(() => {
@@ -108,8 +108,6 @@
             confirmButtonText: 'Aceptar'
           })
         });
-
-    //var dataSet = [];
     var arrayDatos = [];
     
 
@@ -151,47 +149,32 @@
           querySnapshot.forEach((doc) => {
             const client = doc.data();
             client.id = doc.id;  
-
-            var telefonos= "";
-            var correos= "";
-
-            for(let i=0; i<((client.arryTels).length); i++){
-              if(i ==0){
-                telefonos = client.arryTels[i];
-              }else{
-                telefonos += ", "+ client.arryTels[i];
-              }
+            var telefonos = "";
+            var correos = "";
+            // guardamos los datos en un array
+            if ((client.telefono2) != "0"){
+              /* arrayDatos = arrayDatos.concat([[client.id, client.cedula, client.nombre , ( client.telefono + " / " +client.telefono2) , client.direccion ,
+                (client.correo + " / " + client.correo2) , client.fecha, 
+                '<button class="btnEdit" id="'+(client.id)+'" onclick="editar(this.id)"><i class="far fa-edit"></i></button> <button id="'+(client.id)+'" onclick="eliminar(this.id)" class="btnDelete"><i class="far fa-trash-alt"></i></button>'
+                 ]]); */
+                 telefonos = client.telefono + " / " +client.telefono2;
+            }else{
+              telefonos = client.telefono;
             }
-
-            for(let i=0; i < ((client.arrayEmails).length); i++){
-              if(i ==0){
-                correos = client.arrayEmails[i];
-              }else{
-                correos += ", "+ client.arrayEmails[i];
-              }
-            }
-
-
-            var fechaa = new Date();
-            var fechaNac = "";
-            if((client.fecha) != ''){
-              
-              const chars = client.fecha.split('-');
-  
-              fechaNac =  parseInt(fechaa.getFullYear()) - parseInt(chars[0]);
+            
+            if((client.correo2) != "0"){
+              correos = client.correo + " / " + client.correo2;
 
             }else{
-              fechaNac = "N/A";
+              correos = client.correo;
             }
             
-            
-              arrayDatos = arrayDatos.concat([[client.id, client.cedula, client.nombre , telefonos, client.direccion ,
-                correos , fechaNac, 
+              arrayDatos = arrayDatos.concat([[client.id, client.cedula, client.nombre , telefonos , client.direccion ,
+                correos , client.fecha, 
                 '<button class="btnEdit" id="'+(client.id)+'" onclick="editar(this.id)"><i class="far fa-edit"></i></button> <button id="'+(client.id)+'" onclick="eliminar(this.id)" class="btnDelete"><i class="far fa-trash-alt"></i></button>'
                  ]]);
-
-                 console.log(fechaNac);
-                 console.log(arrayDatos);        
+            
+                                    
           })
 
           /// tabla de clientes
@@ -202,7 +185,8 @@
               data: arrayDatos,
               columnDefs: [
                 {
-                    orderable: false,
+                    orderable: false,/* 
+                    className: 'select-checkbox', */
                     targets: 0
                     
                 },
@@ -226,7 +210,7 @@
                     { title: "Tel&eacute;fono" },
                     { title: "Direcci&oacute;n" },
                     { title: "Correo" },
-                    { title: "Edad" },
+                    { title: "Fecha" },
                     { title: "Acciones" }
                 ]
             } );
@@ -343,15 +327,19 @@
       getClients(iden).then((doc) => {
           if (doc.exists) {
             const dataClient = doc.data()
-            ClientForm['telefono'].value = dataClient.arryTels[0];
-            ClientForm['telefono2'].value = dataClient.arryTels[1];
-            ClientForm['correo'].value = dataClient.arrayEmails[0];
-            ClientForm['correo2'].value = dataClient.arrayEmails[1];
-            ClientForm['cedula'].value = dataClient.cedula;
-            ClientForm['nombre'].value = dataClient.nombre;
-            ClientForm['direccion'].value = dataClient.direccion;
-            ClientForm['fecha'].value = dataClient.fecha;
-            
+            if ((dataClient.telefono2) != "0"){
+              ClientForm['telefono2'].value = dataClient.telefono2;
+            }else if((dataClient.correo2) != "0"){
+              ClientForm['correo2'].value = dataClient.correo2;
+            }
+            else{
+              ClientForm['cedula'].value = dataClient.cedula;
+              ClientForm['nombre'].value = dataClient.nombre;
+              ClientForm['telefono'].value = dataClient.telefono;
+              ClientForm['direccion'].value = dataClient.direccion;
+              ClientForm['correo'].value = dataClient.correo;
+              ClientForm['fecha'].value = dataClient.fecha;
+            }
           } 
         });
       });
@@ -370,11 +358,11 @@
     var result = 'false';
     if(arrayDatos.length > 0){
       for (var i = 0; i < arrayDatos.length; i+=1) {
-        console.log(arrayDatos[i][1]);
         if(arrayDatos[i][1] == ced){
           result = 'true';
           return result;
         }
+        
       } 
       result = 'false';
     }
@@ -399,10 +387,11 @@
     
         //console.log("ced: " + cedula +"nom: " + nombre + " fec: " + fecha + "tel: " + telefono + "corr: " +correo + "dir: "+direccion)
        // await saveClient(cedula.value, nombre.value, telefono.value, direccion.value, correo.value, fecha.value ); //.value es para que guarde todo el elemento
+    
+       var tels= 0;
+       var corrs = 0;
 
-       var telefonos= [telefono.value, telefono2.value];
-       var correos = [correo.value, correo2.value];
-       console.log(checkClient(cedula.value));
+       var arryContacto= [telefono.value, telefono2.value];
 
         if(!editStatus){
 
@@ -416,20 +405,40 @@
               confirmButtonText: 'Aceptar'
             })
           } else{
-            await saveClient(cedula.value, nombre.value, telefonos, direccion.value, correos, fecha.value ); //.value es para que guarde todo el elemento    
+           /*  if(telefono2.length != 0){
+              tels = telefono2.value;
+            }
+            if (correo2.length != 0){
+              corrs = correo2.value;
+            } */
+            await saveClient(cedula.value, nombre.value, arryContacto, direccion.value, correo.value, fecha.value ); //.value es para que guarde todo el elemento    
 
           }
         }else{
+          if(telefono2.length != 0){
             await updateClient(id, {
               cedula: cedula.value,
               nombre: nombre.value,
-              arryTels: telefonos,
+              telefono: telefono.value,
+              telefono2: telefono2.value,
               direccion: direccion.value,
-              arrayEmails: correos,
+              correo: correo.value,
+              correo2: correo2.value,
               fecha: fecha.value
   
             })
-          
+          }else{
+            await updateClient(id, {
+              cedula: cedula.value,
+              nombre: nombre.value,
+              telefono: telefono.value,
+              telefono2: 0,
+              direccion: direccion.value,
+              correo: 0,
+              fecha: fecha.value
+  
+            })
+          }
           
         }
         ClientForm.reset(); //Para que cuando se le de guardar devuelvala página en blanco

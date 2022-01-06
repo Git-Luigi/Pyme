@@ -25,7 +25,7 @@
         <span class="tooltip">User</span>
       </li>
       <li>
-        <a href="products.php">
+        <a href="productos.php">
           <i class='bx bx-chat' ></i>
           <span class="links_name">Productos</span>
         </a>
@@ -39,7 +39,7 @@
         <span class="tooltip">Analytics</span>
       </li>
       <li>
-        <a href="#">
+        <a href="inventario.php">
           <i class='bx bx-folder' ></i>
           <span class="links_name">Analítica</span>
         </a>
@@ -53,14 +53,14 @@
         <span class="tooltip">Order</span>
       </li>
       <li>
-        <a href="#">
+        <a href="perfil.php">
           <i class='bx bx-heart' ></i>
           <span class="links_name">Perfil</span>
         </a>
         <span class="tooltip">Saved</span>
       </li>
       <li>
-        <a href="#">
+        <a href="compras.php">
           <i class='bx bx-cog' ></i>
           <span class="links_name">Otros</span>
         </a>

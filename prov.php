@@ -29,6 +29,22 @@
          <title>MYPYME</title>
 
     <script>
+        /* function crear_elemento() {
+        document.getElementById("demo").innerHTML = `<div class = ' col-md-5'><input type='text'id='telefono'class='form-control' placeholder='Tel&eacute;fono' required='required' /></div>
+                                                    `;
+
+        } */
+
+        //Función  crear elemento
+        /* function crear_elemento(){
+            $('#telefono').after("<input type='text'id='telefono1'class='form-control' placeholder='Tel&eacute;fono' required='required' /><input type='button' class='add' onclick='eliminar_elemento(this);' value = '-'>");
+        }
+
+        //Función eliminar elemento
+        function eliminar_elemento(valor){
+            valor.parentNode.parentNode.removeChild(valor.parentNode);
+            
+        } */
         function active(valor){
         
             valor.style.color = "orange";
@@ -60,13 +76,13 @@
                     <div class="tabNav">
 
                     <ul class="list-inline">
-                        <li class="active" ><a id = "1" onclick = "active(this);" style="color: orange; padding-right: 15px" data-toggle="tab" href="#addCliente">AGREGAR CLIENTE</a></li>
-                        <li><a style="color: gray; padding-left: 15px" id = "2"  onclick = "activeL(this);" data-toggle="tab" href="#listaClientes">LISTA CLIENTES</a></li>
+                        <li class="active" ><a id = "1" onclick = "active(this);" style="color: orange; padding-right: 15px" data-toggle="tab" href="#addProveedor">AGREGAR PROVEEDOR</a></li>
+                        <li><a style="color: gray; padding-left: 15px" id = "2"  onclick = "activeL(this);" data-toggle="tab" href="#listaProv">LISTA PROVEEDORES</a></li>
                     </ul>
                     </div>
                     <div class="tab-content">
-                    <div id="addCliente" class="tab-pane fade in active">
-                        <form id="client-form">                  
+                    <div id="addProveedor" class="tab-pane fade in active">
+                        <form id="proveedor-form">                  
                             <div class="container-fluid" >   
 
                                 <br>
@@ -82,13 +98,13 @@
                                     </div>
                                     <br>
                                     <div class="form-group row">
-                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label">Identificaci&oacute;n *</label>
+                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label">C&eacute;dula F&iacute;sica/Jur&iacute;dica*</label>
                                         <div class="col-sm-3">
                                             <input 
                                                 type="text" 
                                                 id="cedula" 
                                                 class="cedula form-control"
-                                                placeholder="Identificaci&oacute;n"
+                                                placeholder="C&eacute;dula F&iacute;sica/Jur&iacute;dica"
                                                 required="required"
                                                 autofocus
                                             />
@@ -96,120 +112,102 @@
                                         
                                     </div>
                                     <div class="row form-group ">
-                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label">Nombre Completo *</label>
+                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label">Nombre *</label>
                                     <div class = " col-sm-6">
                                             <input 
                                             type="text" 
                                             id="nombre" 
                                             class="form-control"
-                                            placeholder="Nombre Completo"
+                                            placeholder="Nombre"
                                             required="required"
                                             />
                                         </div>
-                                    </div> 
-                                    <div class="form-group  row">   
-                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label">Fecha Nacimiento </label>
-                                    <div class = " col-sm-3">                             
-                                            <input 
-                                            id="fecha" 
-                                            class="date-picker form-control" 
-                                            placeholder="Fecha Nacimiento" 
-                                            type="text" onfocus="this.type='date'" 
-                                            onblur="this.type='text'" onmouseout="timeFunctionLong(this)">
-                                                <script>
-                                                    function timeFunctionLong(input) {
-                                                        setTimeout(function() {
-                                                            input.type = 'text';
-                                                        }, 60000);
-                                                    }
-                                                </script>
-                                        </div>
-                                    </div>     
+                                    </div>    
                                     <div class="form-group row">
                                         <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Tel&eacute;fono Celular *</label>
-                                        <div class = " col-sm-4" id = "container">
-                                            <div class="input-group"  id="newInput"  style="display:table">
-                                                <input 
-                                                    type="text" 
-                                                    id="telefono" 
-                                                    class="form-control"
-                                                    placeholder="Tel&eacute;fono"
-                                                    required="required"
-                                                />
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-default"  style="background-color: orange; color: white; border:transaparent;" type="button"  data-toggle="collapse" data-target="#collapsePhone" aria-expanded="false" aria-controls="collapsePhone"><i class="fas fa-plus"></i></button>
-                                                </span>
-                                            </div>
+                                    <div class = " col-sm-3">
+                                            <input 
+                                            type="text" 
+                                            id="telefono" 
+                                            class="form-control"
+                                            placeholder="Tel&eacute;fono"
+                                            required="required"
+                                            />
+                                        </div>
+                                        <div class = " col-md-2">
+                                            <button class="btnPlus" type="button" data-toggle="collapse" data-target="#collapsePhone" aria-expanded="false" aria-controls="collapsePhone">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
                                         </div>
                                     </div>   
-                                    <div class="collapse" id="collapsePhone">
+                                    <div class="collapse phone" id="collapsePhone">
                                         <div class="form-group row">
                                             <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"></label>
-                                            <div class = " col-sm-4" id = "container">
-                                                <div class="input-group"  id="newInput"  style="display:table">
-                                                    <input 
-                                                        type="text" 
-                                                        id="telefono2" 
-                                                        class="form-control"
-                                                        placeholder="Tel&eacute;fono 2 (Opcional)"
-                                                    />
-                                                    <span class="input-group-btn">
-                                                        <button class="btn btn-default"  style="background-color: orange; color: white; border:transaparent;" type="button" data-toggle="collapse" data-target="#collapsePhone" aria-expanded="false" aria-controls="collapsePhone"><i class="fas fa-minus"></i></button>
-                                                    </span>
-                                                </div>
+                                            <div class = " col-sm-3" id = "container">
+                                                <input 
+                                                type="text" 
+                                                id="telefono2" 
+                                                class="form-control"
+                                                placeholder="Tel&eacute;fono 2 (Opcional)"
+                                                />
+                                            </div> 
+                                            <div class = " col-sm-2">
+                                                <button class="btnPlus" type="button" data-toggle="collapse" data-target="#collapsePhone" aria-expanded="false" aria-controls="collapsePhone">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Correo Electr&oacute;nico </label>
-                                        <div class = " col-sm-4" id = "container">
-                                            <div class="input-group"  id="newInput"  style="display:table">
-                                                <input 
-                                                    type="email" 
-                                                    id="correo" 
-                                                    class="form-control"
-                                                    placeholder="Correo"
-                                                />
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-default"  style="background-color: orange; color: white; border:transaparent;" type="button" data-toggle="collapse" data-target="#collapseEmail" aria-expanded="false" aria-controls="collapseEmail"><i class="fas fa-plus"></i></button>
-                                                </span>
-                                            </div>
+                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Correo Electr&oacute;nico * </label>
+                                    <div class = " col-sm-4" id = "container">
+                                            <input 
+                                            type="email" 
+                                            id="correo" 
+                                            class="form-control"
+                                            placeholder="Correo"
+                                            required="required"
+                                            />
+                                        </div>
+                                        <div class = " col-sm-2">
+                                            <button class="btnPlus" type="button" data-toggle="collapse" data-target="#collapseEmail" aria-expanded="false" aria-controls="collapseEmail">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
                                         </div>
                                     </div>    
-                                    <div class="collapse" id="collapseEmail">
+                                    <div class="collapse email" id="collapseEmail">
                                         <div class="form-group row">
                                             <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"></label>
-                                           <div class = " col-md-4" id = "container">
-                                                
-                                                <div class="input-group"  id="newInput"  style="display:table">
-                                                    <input 
-                                                        type="email" 
-                                                        id="correo2" 
-                                                        class="form-control"
-                                                        placeholder="Correo 2 (Opcional)"
-                                                    />
-                                                    <span class="input-group-btn">
-                                                        <button class="btn btn-default"  style="background-color: orange; color: white; border:transaparent;" type="button" data-toggle="collapse" data-target="#collapseEmail" aria-expanded="false" aria-controls="collapseEmail"><i class="fas fa-minus"></i></button>
-                                                    </span>
-                                                </div>
+                                            <div class = " col-md-4" id = "container">
+                                                <input 
+                                                type="email" 
+                                                id="correo2" 
+                                                class="form-control"
+                                                placeholder="Correo 2 (Opcional)"
+                                                />
                                             </div> 
+                                            <div class = " col-md-2">
+                                                <button class="btnPlus" type="button" data-toggle="collapse" data-target="#collapseEmail" aria-expanded="false" aria-controls="collapseEmail">
+                                                <i class="fas fa-minus"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>   
-                                    <div class="form-group row">
-                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Direcci&oacute;n Exacta </label>
-                                    <div class = " col-sm-6">
+                                    </div>  
+                                    <div class="row form-group ">
+                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label">Descripci&oacute;n</label>
+                                        <div class = " col-sm-6">
                                             <textarea 
-                                            id="direccion" 
-                                            rows="2" 
-                                            class="form-control"
-                                            placeholder="Provincia, Cantón, Distrito, otras señas"
-                                            required="required"
-                                            ></textarea>
+                                                type="text" 
+                                                id="descripcion"  
+                                                rows="2" 
+                                                class="form-control"
+                                                placeholder="Descripci&oacute;n"
+                                                ></textarea>
                                         </div>
-                                    </div>    
+                                    </div>     
                                     <div class="form-group row">
                                         <div class = "col-md-8" style="text-align:right;">
-                                            <button class="btnClose " ><i class="fas fa-times"></i></button>  
+                                            <button class="btnClose " onclick = "limpiar();"><i class="fas fa-times"></i></button>  
                                             <button class="confirm btnSave "  id="btn-task-form"><i class="fas fa-check"></i></button>  
                                             <br><br> 
                                         </div>  
@@ -219,7 +217,7 @@
                         </form>
                     </div>
                     
-	                <div id="listaClientes" class="tab-pane fade">
+	                <div id="listaProv" class="tab-pane fade">
                              
                         <div class="container-fluid" >   
                             <br>
@@ -236,7 +234,7 @@
                                     <div class="linePreloader"></div>
                                 </div>
                                 <div  class = "main">
-                                    <table id="clients" class="display table-striped table-bordered" width="100%"></table> 
+                                    <table id="proveedor" class="display table-striped table-bordered" width="100%"></table> 
                                 </div> 
                             </div>
                         </div>
@@ -292,7 +290,7 @@
     </script>
     
     <!--=====  JS =====-->
-    <script src="js/client.js"></script>  =
+    <script src="js/prov.js"></script>  =
       <script src="js/preload.js"></script> 
   </body>
 </html>

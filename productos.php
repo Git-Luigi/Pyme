@@ -34,39 +34,38 @@
 
         function active(valor){
         
-            valor.style.color = "orange";
-            document.getElementById('2').style.color = "gray";
-            document.getElementById('3').style.color = "gray";
-        }
-        function activeL(valor){
-        
-            valor.style.color = "orange";
-            
-            document.getElementById('1').style.color = "gray";
-            document.getElementById('3').style.color = "gray";
-        }
-        function activeC(valor){
-        
+        valor.style.color = "orange";
+        document.getElementById('2').style.color = "gray";
+        document.getElementById('3').style.color = "gray";
+    }
+    function activeL(valor){
+    
         valor.style.color = "orange";
         
         document.getElementById('1').style.color = "gray";
-        document.getElementById('2').style.color = "gray";
-        }
+        document.getElementById('3').style.color = "gray";
+    }
+    function activeC(valor){
+    
+    valor.style.color = "orange";
+    
+    document.getElementById('1').style.color = "gray";
+    document.getElementById('2').style.color = "gray";
+    }
 
         function check(){
             // Get the checkbox
             var checkBox = document.getElementById("na");
 
             if (checkBox.checked){
-                document.getElementById("fecha").disabled = true;
-                document.getElementById("fecha").value = '';
+                document.getElementById("cantidad").disabled = true;
+                document.getElementById("cantidad").value = '';
             }else{
                 
-                document.getElementById("fecha").disabled = false;
+                document.getElementById("cantidad").disabled = false;
             }
         }
 
-    
         
     </script>
     </head>
@@ -99,7 +98,7 @@
 
                                 <br>
 					            <div class="full-width panel-tittle headerForm text-center">
-                                        <h5>Registro de nuevo cliente</h5>
+                                        <h5>Mis Productos</h5>
                                 </div>
                                 <div class = "contenido">
                                     <div class="row ">
@@ -111,7 +110,7 @@
                                     <br>
                                     <div class="form-group row">
                                         <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label">Nombre Producto *</label>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-5">
                                             <input 
                                                 type="text" 
                                                 id="nombre" 
@@ -123,58 +122,32 @@
                                         </div>
                                         
                                     </div>
-                                    <div class="row form-group ">
-                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label">Proveedor *</label>
-                                        <div class = " col-sm-3">
-                                            <select class="form-control" type="text" id="proveedor" name="proveedor">
-                                                <option>Seleccione un proveedor</option>
-                                            </select>
-                                        </div>
-                                    </div> 
-                                    <div class="form-group  row">   
-                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label">Fecha Caducidad * </label>
-                                        <div class = " col-sm-3">                             
-                                            <input 
-                                            id="fecha" 
-                                            class="date-picker form-control" 
-                                            placeholder="Fecha Caducidad" 
+                                    <div class="form-group row">
+                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Existencias *</label>
+                                        <div class = " col-sm-2">
+                                            <input type="number" 
+                                            id="cantidad" 
+                                            name="cantidad" 
+                                            class="form-control"
+                                            placeholder="Existencias"
                                             required="required"
-                                            type="text" onfocus="this.type='date'" 
-                                            onblur="this.type='text'" onmouseout="timeFunctionLong(this)">
-                                                <script>
-                                                    function timeFunctionLong(input) {
-                                                        setTimeout(function() {
-                                                            input.type = 'text';
-                                                        }, 60000);
-                                                    }
-                                                </script>
+                                            min="0"
+                                            />
                                         </div>
                                         <div class = " col-md-2">
                                             <input type="checkbox" id="na" onclick="check()" name="horns">
                                             <label for="na" style="color: #154360; font-weight: normal; ">No Aplica</label>
                                         </div>
-                                    </div>     
-                                    <div class="form-group row">
-                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Cantidad *</label>
-                                        <div class = " col-sm-3">
-                                            <input type="number" 
-                                            id="cantidad" 
-                                            name="cantidad" 
-                                            class="form-control"
-                                            placeholder="Cantidad"
-                                            required="required"
-                                            min="0"/>
-                                        </div>
                                     </div>   
                                     <div class="form-group row">
-                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Precio *</label>
-                                        <div class = " col-sm-4" id = "container">
+                                        <label style="color: #154360; font-weight: normal; " class="col-sm-2 col-form-label"> Precio Unitario*</label>
+                                        <div class = " col-sm-3" id = "container">
                                             <input 
                                             type="text" 
-                                            id="precio" 
+                                            id="precioU" 
                                             class="form-control"
-                                            placeholder="Precio"
-                                            required="required"
+                                            placeholder="Precio Unitario"
+                                            required="required" 
                                             />
                                         </div>
                                     </div>    
@@ -312,7 +285,7 @@
     </script>
     
     <!--=====  JS =====-->
-    <script src="js/products.js"></script>  =
+    <script src="js/productos.js"></script>  
       <script src="js/preload.js"></script> 
   </body>
 </html>
